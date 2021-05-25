@@ -1,0 +1,355 @@
+---
+title: "leaflet_003"
+author: "CC"
+date: "21-05-2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Datos Vectoriales con R
+
+R y Rstudio es uno los lenguajes de programación que más crecimiento tiene en los últimos años, esto debido al crecimiento exponencial de sus virtudes en cuanto a la **analítica de datos** y el formateo de gráficos. Una de ellas es el análisis de datos espaciales mediante librerías que permiten interactuar con ellos.
+
+Una de esas librerías se trata de Leaflet de javascript, mediante ella podemos crear mapas interactivos webs que permiten presentar información geolocalizada  y compartirla mediante cualquier programa que permita la visualización html (sitios web).
+
+No se necesita ningún conocimiento de programación html ni javascript , ya que el paquete leaflet en Rstudio lo hace todo, pero si necesitarás el conocimiento de como hacerlo en R.
+
+
+### Leyendo datos vectoriales con sf
+
+
+
+```{r}
+library(leaflet)
+library(sp)
+library(sf)
+```
+
+cantones 
+choose.files()
+
+
+
+
+```{r}
+mapa <- leaflet()
+mapa2 <- addTiles(mapa)
+mapa3 <- setView(mapa2, lat = -0.95, lng = -80.7, zoom =12)
+mapa4 <- addMarkers(mapa3, lat = -0.95, lng = -80.7)
+mapa4
+```
+
+```{r}
+mapa5 <- leaflet() %>% addTiles() %>% setView(lat = -0.95, lng = -80.7, zoom =12) %>% addMarkers(lat = -0.95, lng = -80.7)
+
+mapa5 
+```
+
+      
+## Proveedores de mapas: addProviderTiles
+
+```{r}
+mapa5 <- leaflet() %>% addProviderTiles(providers$CartoDB.Positron) %>% setView(lat = -0.95, lng = -80.7, zoom =12) %>% addMarkers(lat = -0.95, lng = -80.7)
+
+mapa5 
+```
+
+
+
+```{r}
+mapa5 <- leaflet() %>% addProviderTiles(providers$CartoDB.Positron) %>% setView(lat = -0.95, lng = -80.7, zoom =12) %>% addMarkers(lat = -0.95, lng = -80.7, label = "Holap")
+
+mapa5 
+```
+
+
+```{r}
+mapa5 <- leaflet() %>% addProviderTiles(providers$CartoDB.Positron) %>% setView(lat = -0.95, lng = -80.7, zoom =12) %>% addMarkers(lat = -0.95, lng = -80.7, popup = "Holap")
+
+mapa5 
+```
+
+
+
+```{r}
+mapa5 <- leaflet() %>% addProviderTiles(providers$CartoDB.Positron) %>% setView(lat = -0.95, lng = -80.7, zoom =12) %>% addCircleMarkers(lat = -0.95, lng = -80.7, popup = "Holap")
+
+mapa5 
+```
+
+
+```{r}
+coord = data.frame(lat = c(-0.955587), lng = c (-80,716636))
+coord[2,] = c(-0.957762,-80,708302)
+coord[3,] = c(-0.951170,-80,699547)
+coord[4, ] = c(-0.954526,-80,683588)
+
+coord[,"radio"] = c(10,40,26,12)
+```
+
+
+```{r}
+mapa5 <- leaflet() %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircleMarkers(
+      lat = coord$lat,                                                      lng = coord$lng, 
+      radius = coord$radio, 
+      fillColor = "red", 
+      color ="black")
+
+mapa5 
+```
+
+
+## 10. Creación de formas a partir de matrices I
+
+```{r}
+
+pal = colorNumeric("BuPu" , domain = coord$radio)
+
+mapa6 <- leaflet() %>% addProviderTiles(providers$CartoDB.Positron) %>% addCircles(
+      lat = coord$lat,                                                      lng = coord$lng, 
+      radius = coord$radio*10, 
+      fillColor = pal(coord$radio), 
+      color ="black", fillOpacity = 0.8,
+label = coord$radio, highlightOptions = highlightOptions(fillColor="red", bringToFront = TRUE, color = "blue"))
+
+mapa6 
+```
+
+
+
+# Leyendo datos vectoriales con sf
+
+
+```{r}
+library(sf)
+```
+
+
+```{r}
+choose.files()
+```
+```{r}
+cantones = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\cantones.geojson")
+```
+
+
+```{r}
+escuelas = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\escuelas.geojson")
+parroquias = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\parroquias.shp")
+vias_p = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\vias_p.kml")
+```
+
+
+
+```{r}
+plot(cantones)
+```
+```{r}
+plot(cantones[1])
+```
+```{r}
+plot(escuelas[2])
+```
+
+Como podemos saber los atributos del los datasets
+
+```{r}
+head(parroquias)
+```
+```{r}
+plot(parroquias)
+```
+```{r}
+plot(vias_p)
+```
+
+
+
+
+
+
+<!-- ```{r} -->
+<!-- cantones = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\cantones.geojson") -->
+<!-- escuelas = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\escuelas.geojson") -->
+<!-- parroquias = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\parroquias.shp") -->
+<!-- vias_p = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\vias_p.kml") -->
+<!-- ``` -->
+
+```{r}
+st_geometry()
+```
+
+
+```{r}
+
+plot(st_geometry(cantones))
+```
+
+```{r}
+plot(vias_p, lwd = 2, col ="blue")
+```
+
+
+```{r}
+plot(escuelas["COORD_Y"])
+```
+
+```{r}
+plot(st_geometry(cantones), lty =3, lwd = 2, col = "blue")
+```
+
+```{r}
+plot(st_geometry(cantones), lty =3, lwd = 2, col = "blue")
+plot(st_geometry(escuelas), pch = 16, col = "white", add = TRUE)
+```
+
+despleguemos la lista de poligonos: para ello obtenemos una parte del todo el dataset.
+
+```{r}
+manta = parroquias[parroquias$DPA_DESCAN=="MANTA",]
+plot(manta)
+```
+
+Podemos unir las lineas poligonales de un poligono global
+
+```{r}
+plot(st_geometry(st_union(parroquias)))
+```
+
+Podemos extraer centroides.
+
+```{r}
+centro_cant = st_centroid(cantones)
+plot(st_geometry(cantones), col = "blue")
+plot(st_geometry(centro_cant), col = "white", cex = 1, add = TRUE)
+```
+
+Interseccciones: la idea es cortar una trabla con otra pero manteniendo los atributos de la otra. Tenemos vias que sobresalen.
+
+```{r}
+centro_cant = st_centroid(cantones)
+plot(st_geometry(cantones), col = "blue")
+plot(st_geometry(centro_cant), col = "white", cex = 1, add = TRUE)
+plot(st_geometry(st_transform(vias_p,32717)), col = "red", add = TRUE)
+```
+
+```{r}
+vias_cantones = st_intersection(st_transform(vias_p, 32717), cantones)
+
+# si se copia se logra el objetivo
+
+plot(st_geometry(cantones), col = "blue")
+plot(st_geometry(centro_cant), col = "white", cex = 1, add = TRUE)
+plot(st_geometry(vias_cantones), col = "red", add = TRUE)
+```
+
+creacion de buffers (cobertura)
+
+st_buffer
+
+```{r}
+vias_p = st_transform(vias_p,32717)
+vias_cantones = st_transform(vias_cantones,32717)
+cantones_b = st_buffer(vias_cantones, 500)
+
+
+plot(st_geometry(cantones), col = "blue")
+plot(st_geometry(centro_cant), col = "white", cex = 1, add = TRUE)
+#canton buffer
+plot(st_geometry(cantones_b), col = "white" , add = TRUE)
+plot(st_geometry(vias_cantones), col = "red" , add = TRUE)
+```
+
+La libreria ggplot: algo con mas estilo
+
+```{r}
+library(ggplot2)
+
+ggplot(data = cantones) + geom_sf()+ geom_sf(data= vias_cantones, color = "red")+ coord_sf(datum = st_crs(cantones))
+```
+
+
+
+```{r}
+library(ggplot2)
+
+ggplot(data = cantones) + geom_sf()+ geom_sf(data= vias_cantones, color = "red")+ 
+geom_sf_text(aes(label = dpa_descan))+
+coord_sf(datum = st_crs(cantones))
+```
+
+
+Creando mapas leaflet
+
+```{r}
+library(sf)
+library(leaflet)
+library(ggplot2)
+library(dplyr)
+
+# choose.files()
+
+cantones = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\cantones.geojson")
+escuelas = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\escuelas.geojson")
+parroquias = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\parroquias.shp")
+vias_p = st_read("C:\\Users\\usuario\\Desktop\\ds\\ds_leaflet\\leaflet_003\\datos_espaciales\\vias_p.kml")
+```
+
+lo recomendable es utilizar la proyeccion: 4326 
+
+```{r}
+cantones = st_transform(cantones,4326)
+escuelas = st_transform(escuelas,4326)
+parroquias = st_transform(parroquias,4326)
+vias_p = st_transform(vias_p,4326)
+```
+
+```{r}
+leaflet() %>% addPolygons(data = cantones) %>% addCircles(data = escuelas) %>% addPolylines(data = vias_p)
+```
+
+
+### FIN ###
+
+
+Ajustando el mapa
+
+```{r}
+coor = st_coordinates(cantones$geometry)
+```
+
+
+
+Mapas en SF
+
+como gnerar la cartografia en leaflet 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

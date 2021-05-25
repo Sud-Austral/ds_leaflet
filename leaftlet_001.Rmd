@@ -1,0 +1,91 @@
+---
+title: "Interactive maps with Leaflet-https://learn.r-journalism.com/en/mapping/leaflet_maps/leaflet/"
+
+author: "VE-CC"
+date: "20-05-2021"
+output: html_document
+---
+
+---
+title: "Leaflet Map"
+output: html_document
+---
+
+```{r}
+# Uncomment and run "install.packages" functions below if you have not yet installed these packages
+
+#install.packages("leaflet")
+
+# IF YOU GET AN ERROR BECAUSE THERE IS NO PACKAGE CALLED httpuv
+#install.packages("httpuv")
+#install.packages("leaflet")
+
+library(leaflet)
+
+
+
+
+#install.packages("dplyr")
+library(dplyr)
+```
+
+```{r}
+# Insert your latitude and longitude in the code below
+# NOTE: Don't get them reversed otherwise you'll end up in the South Pole.
+
+# Initialize and assign m as the leaflet object
+m <- leaflet() %>%
+# Now add tiles to it
+    addTiles() %>%  
+# Setting the middle of where the map should be and the zoom level
+    setView(lng=-77.030137, lat=38.902986, zoom = 16) %>%
+# Now, add a marker with a popup, 
+    addMarkers(lng=-77.030137, lat=38.902986, popup="<b>Hello</b><br><a href='https://www.washingtonpost.com'>-Me</a>")
+
+m 
+```
+
+file:///C:/Users/usuario/Desktop/leaflet_map.html
+
+<iframe src="leaflet_map.html" frameborder="0" width="100%" height="300px"></iframe>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+leaflet(palms) %>%
+  addTiles() %>%
+  addMarkers(lng = ~X, lat = ~Y)
+
+palm.icon <- makeIcon("https://img.icons8.com/ios-glyphs/30/000000/palm-tree.png")
+leaflet(palms) %>%
+  addTiles() %>%
+  addMarkers(lng = ~X, lat = ~Y, icon = palm.icon)
+
+```
+
+```{r}
+library(mapview)
+mapshot(m, url = "m.html")
+```
+
+
+
+
+
+
+
+

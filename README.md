@@ -1,3 +1,3 @@
 # ds_leaflet
 
-![image](files/Users/jzhang/Desktop/Isolated.png)
+![image](crear-mapa-osm-leaflet.jpeg)

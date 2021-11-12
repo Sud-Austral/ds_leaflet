@@ -1,5 +1,6 @@
-# ds leaflet
+# Leaflet en shiny para mostrar rangos de valores representativos de distancias a través de colores con control comunal por URL
 
 ![image](crear-mapa-osm-leaflet.jpeg)
 
-1. https://rstudio.github.io/leaflet/
+Manual de leaflet para R:\
+https://rstudio.github.io/leaflet/

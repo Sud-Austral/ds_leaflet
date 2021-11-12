@@ -1,0 +1,104 @@
+---
+title: "Untitled"
+author: "VE"
+date: "11/11/2021"
+output: html_document
+---
+
+# Las librerias necesarias para correr este ejemplo son las siguientes:
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(leaflet)  # libreria para graficar mapas interactivos
+library(sf)  # manejo de informacion geografica 
+library(viridis)  # paletas de colores
+library(RColorBrewer)  # mas paletas de colores
+library(dplyr)  # manejo de bases de datos
+```
+
+  
+```{r}
+shapem <- read_sf("Microdatos_Censo_2017%3A_Manzana.shp")
+
+```
+```{r}
+shapem$union <- shapem$MANZENT
+
+# length(unique(shapem$union))
+```
+
+
+```{r}
+shapem <- shapem[,c("MANZENT","union","geometry")]
+
+
+```
+
+```{r}
+socio <- readRDS("tabla_socio_geo.rds")
+socio$union <- socio$COD_MzEnt
+socio2 <- merge(socio,shapem, by = "union")
+
+```
+ 
+```{r}
+shape_c <- filter(socio2, COMUNA == "SANTIAGO")
+
+```
+ 
+  
+```{r}
+popupm <- paste0("<b>", "Nombre distrito: ", "</b>", as.character(shape_c$NOMBRE_DIS), 
+    "<br>", "<b>", "Codigo distrito: ", "</b>", as.character(shape_c$CODIGO_DIS), "<br>", 
+    "<b>", "Area: ", "</b>", round(as.numeric(shape_c$SHAPE_Area, 3)), "<br>", "<b>", 
+    "Habitantes: ", "</b>", as.character(shape_c$PERSONAS), "<br>", "<b>", 
+    "Hombres: ", "</b>", as.character(shape_c$HOMBRES.y), "<br>", "<b>", 
+    "Mujer: ", "</b>", shape_c$MUJERES.y, "<br>", "<b>", 
+    "Salud: ", "</b>", shape_c$`3_MEAN_Descripción`, "<br>")
+
+shape_c <- as_tibble(shape_c)
+shape_c <- st_as_sf(shape_c)
+ 
+shape_c<-st_transform(shape_c,crs=4326)
+shape_c$`3_MEAN_rango` <- (shape_c$`3_MEAN_rango`)*0.1
+palnumeric <- colorNumeric("viridis", domain = shape_c$`3_MEAN_rango`) 
+palfac <- colorFactor("RdBu", domain = shape_c$`3_MEAN_Descripción`)
+# shape_c <- shape_c[with(shape_c, order(shape_c$`3_MEAN_rango`)), ] # Orden directo 
+
+
+```
+
+
+
+```{r}
+        leaflet(shape_c) %>% 
+        addTiles() %>%
+          
+        addPolygons( 
+                    color = "#444444" ,
+                    weight = 1, 
+                    smoothFactor = 0.5,
+                    opacity = 1.0, 
+                    fillOpacity = 0.8,  
+                    fillColor = ~palnumeric(shape_c$`3_MEAN_rango`),
+                    # layerId = ~shape_c$COD_MzEnt,
+                    highlightOptions = highlightOptions(color = "white", weight = 2,
+                                                  bringToFront = TRUE),
+                    label = ~shape_c$`3_MEAN_Descripción`,
+                    labelOptions = labelOptions(direction = "auto"),
+                    
+                    popup= popupm,
+                ) %>%
+          addLegend(position = "topright", pal = palfac, values = shape_c$`3_MEAN_Descripción`, title = "Rangos")
+    
+```
+
+
+
+
+
+
+
+
+
+

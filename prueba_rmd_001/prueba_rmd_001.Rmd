@@ -18,7 +18,7 @@ library(dplyr)  # manejo de bases de datos
 
   
 ```{r}
-shapem <- read_sf("Microdatos_Censo_2017%3A_Manzana.shp")
+shapem <- read_sf("C:/Users/chris/OneDrive/Documentos/archivos_grandes/shp_manzanal/Microdatos_Censo_2017%3A_Manzana.shp")
 
 ```
 ```{r}
